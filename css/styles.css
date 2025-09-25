@@ -7,8 +7,8 @@
       font-family: 'Poppins';
     }
 
-    body {
-background: #032A2B;
+    body.bindex{
+background-color: #032A2B;
 background: linear-gradient(90deg, rgba(3, 42, 43, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(3, 42, 43, 1) 100%);
 font-family: 'Poppins';  /* 👉 Cambiá aquí la fuente */
       padding-top: 80px; /* espacio para header fijo */

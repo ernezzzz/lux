@@ -10,20 +10,20 @@
 
   </style>
 </head>
-<body>
+<body class="bindex">
   <!-- Header -->
   <header>
     <h1>GRUPO LUX</h1>
-    <button class="btn-login" onclick="alert('Iniciar sesión presionado')">Iniciar Sesión</button>
+    <button class="btn-login"><a href="backend/loginform.php">Iniciar Sesión</button>
   </header>
 
   <!-- Hero con carrusel -->
   <section class="hero">
     <div class="carousel">
-      <img src="imagenes/20f620f7e65a445102a3d63a76cb1afc.jpg" class="carousel-img active" alt="Imagen 1">
-      <img src="imagenes/78c3f248040747417f5d43a999ba5a58.jpg" class="carousel-img" alt="Imagen 2">
-      <img src="imagenes/3.jpg" class="carousel-img" alt="Imagen 3">
-      <img src="https://picsum.photos/id/1024/1600/900" class="carousel-img" alt="Imagen 4">
+      <img src="https://tecnyfarma.com/wp-content/uploads/2023/09/DSC1737-scaled.jpg" class="carousel-img active" alt="Imagen 1">
+      <img src="https://concentra.com.ar/wp-content/uploads/cuantas-librerias-existen-en-mexico.webp" class="carousel-img" alt="Imagen 2">
+      <img src="https://hailekitchen.com/wp-content/uploads/2021/12/web_4030SW155thTerr_02.jpeg" class="carousel-img" alt="Imagen 3">
+      <img src="https://investin.org/cdn/shop/articles/Doctor_Holding_Stethoscope.jpg?v=1645111758" class="carousel-img" alt="Imagen 4">
       <div class="hero-text">
         <h2>TUS NECESIDADES</h2>
         <p>con tan solo un click</p>
@@ -33,21 +33,21 @@
 
   <!-- Icon Buttons -->
   <section class="icons">
-    <div class="icon-btn" onclick="alert('Farmacia seleccionada')">
+    <div class="icon-btn"> <a href="backend/loginform.php">
       <i>➕</i>
-      <p>FARMACIA</p>
+      <p>FARMACIA</p> </a>
     </div>
-    <div class="icon-btn" onclick="alert('Librería y papelería seleccionada')">
+    <div class="icon-btn"> <a href="backend/loginform.php">
       <i>📖</i>
-      <p>LIBRERÍA Y PAPELERÍA</p>
+      <p>LIBRERÍA Y PAPELERÍA</p> </a>
     </div>
-    <div class="icon-btn" onclick="alert('Electrodomésticos y tecnología seleccionada')">
+    <div class="icon-btn"> <a href="backend/loginform.php">
       <i>💻</i>
-      <p>ELECTRODOMÉSTICOS Y TECNOLOGÍA</p>
+      <p>ELECTRODOMÉSTICOS Y TECNOLOGÍA</p> </a>
     </div>
-    <div class="icon-btn" onclick="alert('Consultorio seleccionado')">
+    <div class="icon-btn"> <a href="backend/loginform.php">
       <i>🏥</i>
-      <p>CONSULTORIO</p>
+      <p>CONSULTORIO</p> </a>
     </div>
   </section>
 
