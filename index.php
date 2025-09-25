@@ -37,7 +37,7 @@
       <i>➕</i>
       <p>FARMACIA</p> </a>
     </div>
-    <div class="icon-btn"> <a href="backend/loginform.php">
+    <div class="icon-btn"> <a href="libreria/dashboard.php">
       <i>📖</i>
       <p>LIBRERÍA Y PAPELERÍA</p> </a>
     </div>
