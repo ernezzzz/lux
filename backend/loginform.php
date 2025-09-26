@@ -35,12 +35,14 @@
           <label for="password" class="form-label label_servicios">Contraseña</label>
           <input type="password" class="form-control" id="password" name="password" required>
         </div>
+        
         <div class="d-grid mb-3">
           <button type="submit" class="btn btn-success">Ingresar</button>
         </div>
       </form>
     </div>
   </div>
+
 
   <!-- Scripts Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

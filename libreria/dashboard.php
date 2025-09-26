@@ -83,44 +83,44 @@
     <!-- Categorías -->
     <div class="row justify-content-center">
       <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Artística')">Artística</button>
+        <a href="productos_categoria.php?cat=Artística" class="btn-category w-100">Artística</a>
       </div>
       <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Comercial')">Comercial</button>
+        <a href="productos_categoria.php?cat=Comercial" class="btn-category w-100">Comercial</a>
       </div>
       <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Escolar')">Escolar</button>
-      </div>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Regalería')">Regalería</button>
-      </div>
-      <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Técnica')">Técnica</button>
-      </div>
-      <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Facultad')">Facultad</button>
+         <a href="productos_categoria.php?cat=Escolar" class="btn-category w-100">Escolar</a>
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Papeles')">Papeles</button>
+        <a href="productos_categoria.php?cat=Regaleria" class="btn-category w-100">Regalería</a>
       </div>
       <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Paquetes')">Paquetes</button>
+         <a href="productos_categoria.php?cat=Tecnica" class="btn-category w-100">Técnica</a>
       </div>
       <div class="col-md-3">
-        <button class="btn-category w-100" onclick="mostrarCategoria('Exclusivo')">Exclusivo</button>
+         <a href="productos_categoria.php?cat=Facultad" class="btn-category w-100">Facultad</a>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-3">
+         <a href="productos_categoria.php?cat=Papeles" class="btn-category w-100">Papeles</a>
+      </div>
+      <div class="col-md-3">
+         <a href="productos_categoria.php?cat=Paquetes" class="btn-category w-100">Paquetes</a>
+      </div>
+      <div class="col-md-3">
+         <a href="productos_categoria.php?cat=Exclusivo" class="btn-category w-100">Exclusivo</a>
       </div>
     </div>
 
     <!-- Botones inferiores -->
     <div class="mt-5">
-      <button class="btn-danger-custom" onclick="visualizarVentas()">VISUALIZAR VENTAS</button>
-      <button class="btn-success-custom" onclick="inventarioCompleto()">INVENTARIO COMPLETO</button>
+      <a href="ventas/ventas_listar.php" class="btn-category w-100">VISUALIZAR VENTAS</a>
+      <a href="../productos_abm/productos_listar.php" class="btn-category w-100">INVENTARIO COMPLETO</a>
     </div>
 
     <!-- Contenido dinámico -->
