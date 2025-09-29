@@ -25,7 +25,7 @@ $negocios = $conn->query("SELECT * FROM negocios");
 
 <h2><?= $id ? "Editar" : "Agregar" ?> Producto</h2>
 
-<form method="post" action="productos_guardar.php">
+<form method="post" action="productos_guardar.php" enctype="multipart/form-data">
     <input type="hidden" name="id_producto" value="<?= $id ?>">
 
     <label>Negocio:</label>
@@ -52,6 +52,26 @@ $negocios = $conn->query("SELECT * FROM negocios");
 
     <label>Categoría:</label>
     <input type="text" name="categoria" value="<?= $categoria ?>"><br><br>
+
+<label>Imágenes:</label><br>
+<input type="file" name="imagenes[]" multiple><br><br>
+
+<?php if ($id): ?>
+  <p>Imágenes actuales:</p>
+  <div style="display:flex; flex-wrap:wrap; gap:10px;">
+    <?php
+    $imagenes = $conn->query("SELECT * FROM productos_imagenes WHERE id_producto = $id");
+    while($img = $imagenes->fetch_assoc()) { ?>
+      <div style="text-align:center;">
+        <img src="<?= $img['ruta'] ?>" width="80" height="80" style="object-fit:cover; display:block; margin-bottom:5px;">
+  <a href="productos_imagen_borrar.php?id_imagen=<?= $img['id_imagen'] ?>&id_producto=<?= $id ?>"
+   class="btn btn-sm btn-danger"
+   onclick="return confirm('¿Eliminar esta imagen?')">❌</a>
+      </div>
+    <?php } ?>
+  </div>
+<?php endif; ?>
+
 
     <button type="submit">Guardar</button>
     <a href="productos_listar.php">Cancelar</a>
