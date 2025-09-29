@@ -48,23 +48,49 @@ $imagenes = $conn->query("SELECT * FROM productos_imagenes WHERE id_producto = $
 
   <div class="row">
 
-    <div id="carouselProducto" class="carousel slide" data-bs-ride="carousel">
+<div id="carouselProducto" class="carousel slide mb-3" data-bs-ride="carousel">
   <div class="carousel-inner">
     <?php 
     $imagenes = $conn->query("SELECT * FROM productos_imagenes WHERE id_producto = $id_producto");
     $active = "active";
+    $indice = 0;
+    $rutas = []; // guardamos las rutas para miniaturas
     if ($imagenes->num_rows > 0) {
-      while($img = $imagenes->fetch_assoc()) { ?>
+      while($img = $imagenes->fetch_assoc()) {
+        $rutas[] = $img['ruta']; ?>
         <div class="carousel-item <?= $active ?>">
           <img src="<?= $img['ruta'] ?>" class="d-block w-100" style="height:400px; object-fit:cover;">
         </div>
-        <?php $active = ""; ?>
-      <?php }
+        <?php 
+        $active = "";
+        $indice++;
+      }
     } else { ?>
       <div class="carousel-item active">
         <img src="https://via.placeholder.com/600x400" class="d-block w-100">
       </div>
     <?php } ?>
+  </div>
+  
+  <!-- Botones de navegación -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselProducto" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<!-- Miniaturas debajo -->
+<?php if (!empty($rutas)) { ?>
+  <div class="d-flex flex-wrap gap-2 justify-content-center">
+    <?php foreach($rutas as $i => $ruta) { ?>
+      <img src="<?= $ruta ?>" class="img-thumbnail" style="width:100px; height:80px; object-fit:cover; cursor:pointer;"
+           data-bs-target="#carouselProducto" data-bs-slide-to="<?= $i ?>">
+    <?php } ?>
+  </div>
+<?php } ?>
+
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
     <span class="carousel-control-prev-icon"></span>
@@ -84,7 +110,6 @@ $imagenes = $conn->query("SELECT * FROM productos_imagenes WHERE id_producto = $
       <p><b>Categoría:</b> <?= htmlspecialchars($producto['categoria']) ?></p>
       <p><b>Negocio:</b> <?= htmlspecialchars($producto['negocio']) ?></p>
 
-      <button class="btn btn-primary">🛒 Agregar al carrito</button>
     </div>
   </div>
 </div>
