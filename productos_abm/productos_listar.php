@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 include("../backend/conexion.php");
 
@@ -10,10 +10,9 @@ if ($_SESSION['id_rol'] != 1 && $_SESSION['id_rol'] != 2) {
     die("<div class='alert alert-danger'>⛔ No tienes permisos para acceder a esta página</div>");
 }
 
-// Tomamos negocio desde sesión
 $id_negocio = $_SESSION['id_negocio'];
 
-// --- Parámetros GET ---
+// --- Filtros y query igual que antes ---
 $precio_min = $_GET['precio_min'] ?? '';
 $precio_max = $_GET['precio_max'] ?? '';
 $categoria  = $_GET['categoria'] ?? '';
@@ -24,7 +23,6 @@ $page       = $_GET['page'] ?? 1;
 $limit      = 20;
 $offset     = ($page - 1) * $limit;
 
-// --- Consulta base ---
 $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock, p.categoria,
         (SELECT ruta FROM productos_imagenes WHERE id_producto = p.id_producto LIMIT 1) AS imagen
         FROM productos p
@@ -32,36 +30,17 @@ $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock, p.cate
 $params = [$id_negocio];
 $types = "i";
 
-// --- Filtros ---
-if ($precio_min !== '') {
-    $sql .= " AND p.precio >= ?";
-    $params[] = $precio_min; $types .= "d";
-}
-if ($precio_max !== '') {
-    $sql .= " AND p.precio <= ?";
-    $params[] = $precio_max; $types .= "d";
-}
-if ($categoria !== '') {
-    $sql .= " AND p.categoria LIKE ?";
-    $params[] = "%$categoria%"; $types .= "s";
-}
-if ($stock !== '') {
-    $sql .= " AND p.stock >= ?";
-    $params[] = $stock; $types .= "i";
-}
-if ($nombre !== '') {
-    $sql .= " AND p.nombre LIKE ?";
-    $params[] = "%$nombre%"; $types .= "s";
-}
+if ($precio_min !== '') { $sql .= " AND p.precio >= ?"; $params[] = $precio_min; $types.="d"; }
+if ($precio_max !== '') { $sql .= " AND p.precio <= ?"; $params[] = $precio_max; $types.="d"; }
+if ($categoria !== '')  { $sql .= " AND p.categoria LIKE ?"; $params[] = "%$categoria%"; $types.="s"; }
+if ($stock !== '')      { $sql .= " AND p.stock >= ?"; $params[] = $stock; $types.="i"; }
+if ($nombre !== '')     { $sql .= " AND p.nombre LIKE ?"; $params[] = "%$nombre%"; $types.="s"; }
 
-// --- Orden ---
 switch ($orden) {
     case "mayor_precio": $sql .= " ORDER BY p.precio DESC"; break;
     case "menor_precio": $sql .= " ORDER BY p.precio ASC"; break;
     default: $sql .= " ORDER BY p.nombre ASC"; break;
 }
-
-// --- Paginación ---
 $sql .= " LIMIT $limit OFFSET $offset";
 
 $stmt = $conn->prepare($sql);
@@ -69,7 +48,6 @@ $stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// --- Contar total para paginación ---
 $sqlCount = "SELECT COUNT(*) as total FROM productos p WHERE p.id_negocio = ?";
 $stmtCount = $conn->prepare($sqlCount);
 $stmtCount->bind_param("i", $id_negocio);
@@ -77,7 +55,6 @@ $stmtCount->execute();
 $totalRows = $stmtCount->get_result()->fetch_assoc()['total'];
 $totalPages = ceil($totalRows / $limit);
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -106,16 +83,12 @@ $totalPages = ceil($totalRows / $limit);
             <input type="number" step="0.01" name="precio_min" class="form-control" placeholder="Desde" value="<?= htmlspecialchars($precio_min) ?>">
             <input type="number" step="0.01" name="precio_max" class="form-control" placeholder="Hasta" value="<?= htmlspecialchars($precio_max) ?>">
           </div>
-
           <label>Categoría:</label>
           <input type="text" name="categoria" class="form-control mb-2" value="<?= htmlspecialchars($categoria) ?>">
-
           <label>Stock mínimo:</label>
           <input type="number" name="stock" class="form-control mb-2" value="<?= htmlspecialchars($stock) ?>">
-
           <label>Nombre:</label>
           <input type="text" name="nombre" class="form-control mb-2" value="<?= htmlspecialchars($nombre) ?>">
-
           <button type="submit" class="btn btn-primary w-100">🔎 Filtrar</button>
           <a href="productos_listar.php" class="btn btn-secondary w-100 mt-2">♻ Limpiar</a>
         </form>
@@ -133,22 +106,27 @@ $totalPages = ceil($totalRows / $limit);
             <option value="menor_precio" <?= $orden=="menor_precio"?"selected":"" ?>>Menor precio</option>
           </select>
         </div>
-        <h4 class="text-danger"><?= htmlspecialchars($categoria ?: "Productos") ?></h4>
+        <div>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregar">➕ Agregar Producto</button>
+        </div>
       </div>
 
       <div class="row g-3">
         <?php if ($result->num_rows > 0) { ?>
           <?php while($row = $result->fetch_assoc()) { ?>
             <div class="col-md-3">
-              <div class="product-card">
-                <a href="producto_detalle.php?id=<?= $row['id_producto'] ?>">
-                  <img src="<?= $row['imagen'] ?: 'https://via.placeholder.com/150' ?>" alt="Producto">
-                </a>
+              <div class="product-card p-2">
+                <img src="<?= $row['imagen'] ?: 'https://via.placeholder.com/150' ?>" alt="Producto">
                 <div class="p-2">
-                  <a href="producto_detalle.php?id=<?= $row['id_producto'] ?>" class="text-decoration-none text-dark">
-                    <h6><?= htmlspecialchars($row['nombre']) ?></h6>
-                  </a>
-                  <p class="text-muted">$<?= number_format($row['precio'],2) ?></p>
+                  <h6><?= htmlspecialchars($row['nombre']) ?></h6>
+                  <p class="text-muted mb-1">$<?= number_format($row['precio'],2) ?></p>
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-sm btn-warning" 
+                            onclick="editarProducto(<?= $row['id_producto'] ?>, '<?= htmlspecialchars($row['nombre']) ?>', '<?= htmlspecialchars($row['descripcion']) ?>', <?= $row['precio'] ?>, <?= $row['stock'] ?>)">
+                      ✏ Editar
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="eliminarProducto(<?= $row['id_producto'] ?>)">🗑 Eliminar</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -173,7 +151,99 @@ $totalPages = ceil($totalRows / $limit);
     </div>
   </div>
 </div>
+
+<!-- Modal Agregar -->
+<div class="modal fade" id="modalAgregar" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formAgregar">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Agregar Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" name="nombre" class="form-control mb-2" placeholder="Nombre" required>
+          <textarea name="descripcion" class="form-control mb-2" placeholder="Descripción"></textarea>
+          <input type="number" name="precio" step="0.01" class="form-control mb-2" placeholder="Precio" required>
+          <input type="number" name="stock" class="form-control mb-2" placeholder="Stock" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="modalEditar" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEditar">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title">Editar Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id_producto" id="edit_id">
+          <input type="text" name="nombre" id="edit_nombre" class="form-control mb-2" required>
+          <textarea name="descripcion" id="edit_descripcion" class="form-control mb-2"></textarea>
+          <input type="number" name="precio" id="edit_precio" step="0.01" class="form-control mb-2" required>
+          <input type="number" name="stock" id="edit_stock" class="form-control mb-2" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-warning">Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function editarProducto(id, nombre, descripcion, precio, stock) {
+  document.getElementById('edit_id').value = id;
+  document.getElementById('edit_nombre').value = nombre;
+  document.getElementById('edit_descripcion').value = descripcion;
+  document.getElementById('edit_precio').value = precio;
+  document.getElementById('edit_stock').value = stock;
+  new bootstrap.Modal(document.getElementById('modalEditar')).show();
+}
+
+function eliminarProducto(id) {
+  if (confirm('¿Seguro que deseas eliminar este producto?')) {
+    fetch('productos_borrar.php?id=' + id)
+      .then(res => res.text())
+      .then(() => location.reload());
+  }
+}
+
+// Guardar nuevo producto
+document.getElementById("formAgregar").addEventListener("submit", function(e) {
+  e.preventDefault();
+  let formData = new FormData(this);
+  fetch("productos_guardar.php", { method: "POST", body: formData })
+    .then(r => r.json())
+    .then(data => {
+      alert(data.message);
+      if (data.success) location.reload();
+    });
+});
+
+// Editar producto
+document.getElementById("formEditar").addEventListener("submit", function(e) {
+  e.preventDefault();
+  let formData = new FormData(this);
+  fetch("productos_actualizar.php", { method: "POST", body: formData })
+    .then(r => r.json())
+    .then(data => {
+      alert(data.message);
+      if (data.success) location.reload();
+    });
+});
+
+
+// TODO: Conectar los formularios con productos_guardar.php y productos_actualizar.php usando fetch POST
+</script>
 </body>
 </html>
-
-

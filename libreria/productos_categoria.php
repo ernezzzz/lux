@@ -27,10 +27,12 @@ $result = $stmt->get_result();
     <h1 class="text-center text-danger">Productos - <?= htmlspecialchars($categoria) ?></h1>
     <div class="text-center mb-4">
       <a href="dashboard.php" class="btn btn-secondary">⬅ Volver al Dashboard</a>
+      <a href="../productos_abm/productos_form.php" class="btn btn-success">➕ Nuevo Producto</a>
+      <a href="../productos_abm/productos_listar.php" class="btn btn-primary">📋 Inventario Completo</a>
     </div>
 
     <?php if ($result->num_rows > 0) { ?>
-      <table class="table table-striped table-bordered">
+      <table class="table table-striped table-bordered align-middle">
         <thead class="table-dark">
           <tr>
             <th>ID</th>
@@ -39,23 +41,31 @@ $result = $stmt->get_result();
             <th>Descripción</th>
             <th>Precio</th>
             <th>Stock</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
         <?php while ($row = $result->fetch_assoc()) { ?>
           <tr>
             <td><?= $row['id_producto'] ?></td>
-            <td><?= $row['negocio'] ?></td>
-            <td><?= $row['nombre'] ?></td>
-            <td><?= $row['descripcion'] ?></td>
-            <td><?= $row['precio'] ?></td>
+            <td><?= htmlspecialchars($row['negocio']) ?></td>
+            <td><?= htmlspecialchars($row['nombre']) ?></td>
+            <td><?= htmlspecialchars($row['descripcion']) ?></td>
+            <td>$<?= number_format($row['precio'],2) ?></td>
             <td><?= $row['stock'] ?></td>
+            <td class="text-center">
+              <a href="../productos_abm/productos_form.php?id=<?= $row['id_producto'] ?>" 
+                 class="btn btn-sm btn-warning">✏ Editar</a>
+              <a href="../productos_abm/productos_borrar.php?id=<?= $row['id_producto'] ?>" 
+                 class="btn btn-sm btn-danger" 
+                 onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑 Eliminar</a>
+            </td>
           </tr>
         <?php } ?>
         </tbody>
       </table>
     <?php } else { ?>
-      <div class="alert alert-info">No hay productos en la categoría <b><?= htmlspecialchars($categoria) ?></b>.</div>
+      <div class="alert alert-info">⚠️ No hay productos en la categoría <b><?= htmlspecialchars($categoria) ?></b>.</div>
     <?php } ?>
   </div>
 </body>
@@ -64,4 +74,5 @@ $result = $stmt->get_result();
 $stmt->close();
 $conn->close();
 ?>
+
 
