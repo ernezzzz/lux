@@ -13,7 +13,7 @@ if ($_SESSION['id_rol'] != 1 && $_SESSION['id_rol'] != 2) {
 
 $id_negocio = $_SESSION['id_negocio'];
 
-// --- Filtros y query igual que antes ---
+// --- Filtros y query ---
 $precio_min = $_GET['precio_min'] ?? '';
 $precio_max = $_GET['precio_max'] ?? '';
 $categoria  = $_GET['categoria'] ?? '';
@@ -62,7 +62,47 @@ $totalPages = ceil($totalRows / $limit);
   <meta charset="UTF-8">
   <title>Productos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      background: linear-gradient(90deg, #1e293b, #334155);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding-top: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+      padding-left: 2rem !important;
+      padding-right: 2rem !important;
+      min-height: 64px;
+    }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      color: #fff !important;
+      margin-right: auto !important; /* siempre a la izquierda */
+    }
+    .navbar .btn {
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 0.4rem 1rem !important;
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+    .navbar .btn:hover {
+      transform: translateY(-2px);
+      background-color: #10b981;
+      color: #fff;
+    }
+
+    /* ===== Productos ===== */
     .sidebar { background:#f6f5f2; padding:20px; border-radius:10px; }
     .product-card { border:1px solid #ddd; border-radius:10px; overflow:hidden; text-align:center; background:#fff; }
     .product-card img { width:100%; height:150px; object-fit:cover; transition:0.3s; }
@@ -70,7 +110,16 @@ $totalPages = ceil($totalRows / $limit);
     .pagination a { margin:0 5px; }
   </style>
 </head>
-<body class="bg-light">
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark px-4">
+  <a class="navbar-brand text-white" href="#">GRUPO LUX</a>
+  <div class="ms-auto">
+    <a href="../libreria/dashboard.php" class="btn btn-outline-light me-2 px-3">Volver</a>
+  </div>
+</nav>
+
 <div class="container-fluid mt-4">
   <div class="row">
     
@@ -242,9 +291,6 @@ document.getElementById("formEditar").addEventListener("submit", function(e) {
       if (data.success) location.reload();
     });
 });
-
-
-// TODO: Conectar los formularios con productos_guardar.php y productos_actualizar.php usando fetch POST
 </script>
 </body>
 </html>
