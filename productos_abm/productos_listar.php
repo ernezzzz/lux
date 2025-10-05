@@ -1,5 +1,6 @@
-<?php 
-session_start();
+<?php
+include '../backend/checklogin.php'; // protege la página
+include '../backend/header.php';     // muestra la barra superior
 include("../backend/conexion.php");
 
 // Verificar sesión y permisos

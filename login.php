@@ -1,6 +1,7 @@
 <?php
 session_start();
-include 'conexion.php'; // Asegúrate de tener la conexión en $conn
+include 'backend/checklogin.php';
+include 'backend/conexion.php'; // Asegúrate de tener la conexión en $conn
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['nombre']);
@@ -27,13 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id_negocio'] = $usuarioData['id_negocio'];
 
             // Redirección según rol
-            if ($usuarioData['id_rol'] == 1 || $usuarioData['id_rol'] == 2) {
+            if ($usuarioData['id_rol'] == 1) {
                 // Admin general o admin de negocio
-                header('Location: ../libreria/dashboard.php');
+                header('Location: admin.php');
+            } elseif ($usuarioData['id_rol'] == 2) {
+                header('Location: libreria/cliente_dashboard.php');
             } elseif ($usuarioData['id_rol'] == 3) {
-                header('Location: cliente_dashboard.php');
+                header('Location: libreria/cliente_dashboard.php');
             } elseif ($usuarioData['id_rol'] == 4) {
-                header('Location: empleado_dashboard.php');
+                header('Location: libreria/empleado_dashboard.php');
             } elseif ($usuarioData['id_rol'] == 5) {
                 header('Location: medico_dashboard.php');
             } else {

@@ -1,5 +1,8 @@
+
 <?php
-// dashboard.php
+include '../backend/checklogin.php'; // protege la página
+include '../backend/header.php';     // muestra la barra superior
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
