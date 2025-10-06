@@ -9,7 +9,6 @@
     <ul class="navbar-nav ms-auto">
       <li class="nav-item me-3 text-white">
         👤 <?= htmlspecialchars($_SESSION['nombre']) ?> 
-        (Rol: <?= htmlspecialchars($_SESSION['id_rol']) ?>)
       </li>
       <li class="nav-item">
       </li>

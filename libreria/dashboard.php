@@ -129,7 +129,11 @@ include '../backend/header.php';     // muestra la barra superior
   <nav class="navbar navbar-dark px-4">
     <a class="navbar-brand text-white" href="#">GRUPO LUX</a>
     <div class="ms-auto">
-      <a href="../admin.php" class="btn btn-outline-light me-2 px-3">Volver</a>
+      <?php if (isset($_SESSION['id_usuario']) && $_SESSION['id_usuario'] == 1) { ?>
+        <a href="../admin.php" class="btn btn-outline-light me-2 px-3">Volver</a>
+      <?php } else { ?>
+        <a href="../index.php" class="btn btn-outline-light me-2 px-3">Cerrar Sesión</a>
+      <?php } ?>
     </div>
   </nav>
 

@@ -9,6 +9,9 @@ if (!$categoria) {
     die("<div class='alert alert-warning'>⚠️ No se especificó categoría</div>");
 }
 
+// Supongamos que el rol está en $_SESSION['id_rol']
+$rol = $_SESSION['id_rol'] ?? null;
+
 $stmt = $conn->prepare("SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock, n.nombre AS negocio 
                         FROM productos p
                         LEFT JOIN negocios n ON p.id_negocio = n.id_negocio
@@ -99,8 +102,10 @@ $result = $stmt->get_result();
 
     <div class="text-center mb-4 btn-group">
       <a href="dashboard.php" class="btn btn-secondary">⬅ Volver</a>
-      <a href="../productos_abm/productos_form.php" class="btn btn-success">➕ Nuevo Producto</a>
-      <a href="../productos_abm/productos_listar.php" class="btn btn-primary">📋 Inventario Completo</a>
+      <?php if ($rol != 4) { ?>
+        <a href="../productos_abm/productos_form.php" class="btn btn-success">➕ Nuevo Producto</a>
+        <a href="../productos_abm/productos_listar.php" class="btn btn-primary">📋 Inventario Completo</a>
+      <?php } ?>
     </div>
 
     <?php if ($result->num_rows > 0) { ?>
@@ -114,7 +119,7 @@ $result = $stmt->get_result();
               <th>Descripción</th>
               <th>Precio</th>
               <th>Stock</th>
-              <th>Acciones</th>
+              <?php if ($rol != 4) { ?><th>Acciones</th><?php } ?>
             </tr>
           </thead>
           <tbody>
@@ -126,6 +131,7 @@ $result = $stmt->get_result();
               <td><?= htmlspecialchars($row['descripcion']) ?></td>
               <td>$<?= number_format($row['precio'],2) ?></td>
               <td><?= $row['stock'] ?></td>
+              <?php if ($rol != 4) { ?>
               <td class="text-center">
                 <a href="../productos_abm/productos_form.php?id=<?= $row['id_producto'] ?>" 
                    class="btn btn-sm btn-warning">✏ Editar</a>
@@ -133,6 +139,7 @@ $result = $stmt->get_result();
                    class="btn btn-sm btn-danger"
                    onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑 Eliminar</a>
               </td>
+              <?php } ?>
             </tr>
           <?php } ?>
           </tbody>

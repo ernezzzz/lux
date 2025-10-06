@@ -32,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Admin general o admin de negocio
                 header('Location: admin.php');
             } elseif ($usuarioData['id_rol'] == 2) {
-                header('Location: libreria/cliente_dashboard.php');
+                header('Location: libreria/dashboard.php');
             } elseif ($usuarioData['id_rol'] == 3) {
-                header('Location: libreria/cliente_dashboard.php');
+                header('Location: libreria/dashboard.php');
             } elseif ($usuarioData['id_rol'] == 4) {
-                header('Location: libreria/empleado_dashboard.php');
+                header('Location: libreria/dashboard.php');
             } elseif ($usuarioData['id_rol'] == 5) {
                 header('Location: medico_dashboard.php');
             } else {

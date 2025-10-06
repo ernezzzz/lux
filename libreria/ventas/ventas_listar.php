@@ -75,6 +75,7 @@ if ($types !== "") {
 }
 $stmtMain->execute();
 $ventas = $stmtMain->get_result();
+$rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -245,8 +246,10 @@ $ventas = $stmtMain->get_result();
             <?php } ?>
 
             <div class="mt-3 text-end">
+              <?php if ($rol != 4) { ?>
               <a href="ventas_form.php?id=<?= $venta['id_venta'] ?>" class="btn btn-sm btn-warning">✏ Editar</a>
               <a href="ventas_borrar.php?id=<?= $venta['id_venta'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta venta?')">🗑 Eliminar</a>
+              <?php } ?>
             </div>
           </div>
         <?php } ?>

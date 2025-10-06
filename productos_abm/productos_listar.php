@@ -7,11 +7,8 @@ include("../backend/conexion.php");
 if (!isset($_SESSION['id_usuario'])) {
     die("<div class='alert alert-danger'>⚠️ Debes iniciar sesión</div>");
 }
-if ($_SESSION['id_rol'] != 1 && $_SESSION['id_rol'] != 2) {
-    die("<div class='alert alert-danger'>⛔ No tienes permisos para acceder a esta página</div>");
-}
-
 $id_negocio = $_SESSION['id_negocio'];
+$rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
 
 // --- Filtros y query ---
 $precio_min = $_GET['precio_min'] ?? '';
@@ -156,9 +153,11 @@ $totalPages = ceil($totalRows / $limit);
             <option value="menor_precio" <?= $orden=="menor_precio"?"selected":"" ?>>Menor precio</option>
           </select>
         </div>
+        <?php if ($rol != 4) { ?>
         <div>
           <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregar">➕ Agregar Producto</button>
         </div>
+        <?php } ?>
       </div>
 
       <div class="row g-3">
@@ -170,6 +169,7 @@ $totalPages = ceil($totalRows / $limit);
                 <div class="p-2">
                   <h6><?= htmlspecialchars($row['nombre']) ?></h6>
                   <p class="text-muted mb-1">$<?= number_format($row['precio'],2) ?></p>
+                  <?php if ($rol != 4) { ?>
                   <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-sm btn-warning" 
                             onclick="editarProducto(<?= $row['id_producto'] ?>, '<?= htmlspecialchars($row['nombre']) ?>', '<?= htmlspecialchars($row['descripcion']) ?>', <?= $row['precio'] ?>, <?= $row['stock'] ?>)">
@@ -177,6 +177,7 @@ $totalPages = ceil($totalRows / $limit);
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="eliminarProducto(<?= $row['id_producto'] ?>)">🗑 Eliminar</button>
                   </div>
+                  <?php } ?>
                 </div>
               </div>
             </div>
@@ -202,6 +203,7 @@ $totalPages = ceil($totalRows / $limit);
   </div>
 </div>
 
+<?php if ($rol != 4) { ?>
 <!-- Modal Agregar -->
 <div class="modal fade" id="modalAgregar" tabindex="-1">
   <div class="modal-dialog">
@@ -224,7 +226,9 @@ $totalPages = ceil($totalRows / $limit);
     </div>
   </div>
 </div>
+<?php } ?>
 
+<?php if ($rol != 4) { ?>
 <!-- Modal Editar -->
 <div class="modal fade" id="modalEditar" tabindex="-1">
   <div class="modal-dialog">
@@ -248,6 +252,7 @@ $totalPages = ceil($totalRows / $limit);
     </div>
   </div>
 </div>
+<?php } ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
