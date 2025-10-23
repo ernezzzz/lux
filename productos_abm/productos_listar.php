@@ -1,4 +1,10 @@
 <?php
+$isAjax = $_SERVER['REQUEST_METHOD'] === 'POST';
+if ($isAjax) {
+    // Sobrescribe $_GET con los datos de POST para reutilizar el código
+    $_GET = $_POST;
+}
+
 include '../backend/checklogin.php'; // protege la página
 include '../backend/header.php';     // muestra la barra superior
 include("../backend/conexion.php");
@@ -124,7 +130,7 @@ $totalPages = ceil($totalRows / $limit);
     <div class="col-md-3">
       <div class="sidebar">
         <h5><b>FILTROS:</b></h5>
-        <form method="get">
+        <form id="filtrosForm" method="get">
           <label>Precio:</label>
           <div class="d-flex gap-2 mb-2">
             <input type="number" step="0.01" name="precio_min" class="form-control" placeholder="Desde" value="<?= htmlspecialchars($precio_min) ?>">
@@ -160,44 +166,45 @@ $totalPages = ceil($totalRows / $limit);
         <?php } ?>
       </div>
 
-      <div class="row g-3">
-        <?php if ($result->num_rows > 0) { ?>
-          <?php while($row = $result->fetch_assoc()) { ?>
-            <div class="col-md-3">
-              <div class="product-card p-2">
-                <img src="<?= $row['imagen'] ?: 'https://via.placeholder.com/150' ?>" alt="Producto">
-                <div class="p-2">
-                  <h6><?= htmlspecialchars($row['nombre']) ?></h6>
-                  <p class="text-muted mb-1">$<?= number_format($row['precio'],2) ?></p>
-                  <?php if ($rol != 4) { ?>
-                  <div class="d-flex justify-content-center gap-2">
-                    <button class="btn btn-sm btn-warning" 
-                            onclick="editarProducto(<?= $row['id_producto'] ?>, '<?= htmlspecialchars($row['nombre']) ?>', '<?= htmlspecialchars($row['descripcion']) ?>', <?= $row['precio'] ?>, <?= $row['stock'] ?>)">
-                      ✏ Editar
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="eliminarProducto(<?= $row['id_producto'] ?>)">🗑 Eliminar</button>
+      <div id="productos-lista">
+        <div class="row g-3">
+          <?php if ($result->num_rows > 0) { ?>
+            <?php while($row = $result->fetch_assoc()) { ?>
+              <div class="col-md-3">
+                <div class="product-card p-2">
+                  <img src="<?= $row['imagen'] ?: 'https://via.placeholder.com/150' ?>" alt="Producto">
+                  <div class="p-2">
+                    <h6><?= htmlspecialchars($row['nombre']) ?></h6>
+                    <p class="text-muted mb-1">$<?= number_format($row['precio'],2) ?></p>
+                    <?php if ($rol != 4) { ?>
+                    <div class="d-flex justify-content-center gap-2">
+                      <button class="btn btn-sm btn-warning" 
+                              onclick="editarProducto(<?= $row['id_producto'] ?>, '<?= htmlspecialchars($row['nombre']) ?>', '<?= htmlspecialchars($row['descripcion']) ?>', <?= $row['precio'] ?>, <?= $row['stock'] ?>)">
+                        ✏ Editar
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="eliminarProducto(<?= $row['id_producto'] ?>)">🗑 Eliminar</button>
+                    </div>
+                    <?php } ?>
                   </div>
-                  <?php } ?>
                 </div>
               </div>
-            </div>
+            <?php } ?>
+          <?php } else { ?>
+            <div class="alert alert-warning">⚠️ No se encontraron productos.</div>
           <?php } ?>
-        <?php } else { ?>
-          <div class="alert alert-warning">⚠️ No se encontraron productos.</div>
-        <?php } ?>
-      </div>
-
-      <!-- Paginación -->
-      <div class="d-flex justify-content-center mt-4">
-        <nav>
-          <ul class="pagination">
-            <?php for($i=1; $i<=$totalPages; $i++): ?>
-              <li class="page-item <?= $i==$page ? 'active' : '' ?>">
-                <a class="page-link" href="?page=<?= $i ?>&orden=<?= $orden ?>"><?= $i ?></a>
-              </li>
-            <?php endfor; ?>
-          </ul>
-        </nav>
+        </div>
+        <!-- Paginación -->
+        <div class="d-flex justify-content-center mt-4">
+          <nav>
+            <ul class="pagination">
+              <?php for($i=1; $i<=$totalPages; $i++): ?>
+                <li class="page-item <?= $i==$page ? 'active' : '' ?>">
+                  <a class="page-link" href="?page=<?= $i ?>&orden=<?= $orden ?>"><?= $i ?></a>
+                </li>
+              <?php endfor; ?>
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
@@ -205,22 +212,46 @@ $totalPages = ceil($totalRows / $limit);
 
 <?php if ($rol != 4) { ?>
 <!-- Modal Agregar -->
-<div class="modal fade" id="modalAgregar" tabindex="-1">
+<div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="formAgregar">
+      <form id="formAgregar" method="post" action="productos_guardar.php" enctype="multipart/form-data" class="form-producto" style="box-shadow:none;max-width:100%;padding:1.5rem;">
         <div class="modal-header bg-success text-white">
-          <h5 class="modal-title">Agregar Producto</h5>
+          <h5 class="modal-title" id="modalAgregarLabel">Agregar Producto</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <input type="text" name="nombre" class="form-control mb-2" placeholder="Nombre" required>
-          <textarea name="descripcion" class="form-control mb-2" placeholder="Descripción"></textarea>
-          <input type="number" name="precio" step="0.01" class="form-control mb-2" placeholder="Precio" required>
-          <input type="number" name="stock" class="form-control mb-2" placeholder="Stock" required>
+          <label>Negocio:</label>
+          <select name="id_negocio" required class="form-select mb-2">
+            <option value="">Seleccione...</option>
+            <?php
+            $negocios = $conn->query("SELECT * FROM negocios");
+            while($n = $negocios->fetch_assoc()) { ?>
+              <option value="<?= $n['id_negocio'] ?>"><?= $n['nombre'] ?></option>
+            <?php } ?>
+          </select>
+
+          <label>Nombre:</label>
+          <input type="text" name="nombre" class="form-control mb-2" required>
+
+          <label>Descripción:</label>
+          <textarea name="descripcion" class="form-control mb-2"></textarea>
+
+          <label>Precio:</label>
+          <input type="text" name="precio" class="form-control mb-2" required>
+
+          <label>Stock:</label>
+          <input type="number" name="stock" class="form-control mb-2" required>
+
+          <label>Categoría:</label>
+          <input type="text" name="categoria" class="form-control mb-2">
+
+          <label>Imágenes:</label>
+          <input type="file" name="imagenes[]" multiple class="form-control mb-2">
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </form>
     </div>
@@ -280,8 +311,17 @@ document.getElementById("formAgregar").addEventListener("submit", function(e) {
   fetch("productos_guardar.php", { method: "POST", body: formData })
     .then(r => r.json())
     .then(data => {
-      alert(data.message);
-      if (data.success) location.reload();
+      if (data.success) {
+        // Cierra el modal
+        var modal = bootstrap.Modal.getInstance(document.getElementById('modalAgregar'));
+        modal.hide();
+        // Muestra mensaje de éxito
+        alert('✅ Producto guardado correctamente.');
+        // Recarga la página para ver el nuevo producto
+        location.reload();
+      } else {
+        alert(data.error || 'Ocurrió un error al guardar el producto.');
+      }
     });
 });
 
@@ -296,6 +336,54 @@ document.getElementById("formEditar").addEventListener("submit", function(e) {
       if (data.success) location.reload();
     });
 });
+
+document.getElementById('filtrosForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  filtrarProductos();
+});
+
+function filtrarProductos(page = 1) {
+  const form = document.getElementById('filtrosForm');
+  const formData = new FormData(form);
+  formData.append('page', page);
+
+  fetch('productos_listar.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(r => r.text())
+  .then(html => {
+    // Extrae solo el contenido de #productos-lista del HTML recibido
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const nuevaLista = tempDiv.querySelector('#productos-lista');
+    document.getElementById('productos-lista').innerHTML = nuevaLista.innerHTML;
+
+    // Vuelve a enlazar los eventos de paginación
+    enlazarPaginacion();
+  });
+}
+
+// Enlaza los links de paginación para usar AJAX
+function enlazarPaginacion() {
+  document.querySelectorAll('#productos-lista .pagination a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const page = this.textContent;
+      filtrarProductos(page);
+    });
+  });
+}
+
+// Inicializa eventos al cargar
+enlazarPaginacion();
 </script>
 </body>
 </html>
+
+<?php
+if ($isAjax) {
+  // Solo devuelve la parte de la lista de productos
+  exit();
+}
+?>

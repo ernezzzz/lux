@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'backend/checklogin.php';
+// include 'backend/checklogin.php'; // <-- QUITAR: evita el redirect automático en la página de login
 include 'backend/conexion.php'; // Asegúrate de tener la conexión en $conn
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,18 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Redirección según rol
             if ($usuarioData['id_rol'] == 1) {
-                // Admin general o admin de negocio
                 header('Location: admin.php');
-            } elseif ($usuarioData['id_rol'] == 2) {
-                header('Location: libreria/dashboard.php');
-            } elseif ($usuarioData['id_rol'] == 3) {
-                header('Location: libreria/dashboard.php');
-            } elseif ($usuarioData['id_rol'] == 4) {
-                header('Location: libreria/dashboard.php');
-            } elseif ($usuarioData['id_rol'] == 5) {
-                header('Location: medico_dashboard.php');
             } else {
-                $error = "Rol no reconocido.";
+                header('Location: libreria/dashboard.php');
             }
             exit;
 

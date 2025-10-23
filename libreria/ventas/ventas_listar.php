@@ -75,7 +75,6 @@ if ($types !== "") {
 }
 $stmtMain->execute();
 $ventas = $stmtMain->get_result();
-$rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -183,7 +182,7 @@ $rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
       <h1 class="dashboard-title">Administración de Ventas</h1>
 
       <!-- Filtro de fechas -->
-      <form method="get" class="row g-3 mb-4">
+      <form method="get" class="row g-3 mb-4" id="filtrosForm">
         <div class="col-md-3">
           <label for="fecha_desde" class="form-label">Fecha desde:</label>
           <input type="date" id="fecha_desde" name="fecha_desde" class="form-control" value="<?= htmlspecialchars($fecha_desde) ?>">
@@ -196,7 +195,7 @@ $rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
           <button type="submit" class="btn btn-primary w-100">🔎 Filtrar</button>
         </div>
         <div class="col-md-3 d-flex align-items-end">
-          <a href="ventas_listar.php" class="btn btn-secondary w-100">♻ Limpiar</a>
+          <button type="button" class="btn btn-secondary w-100 mt-2" id="btnLimpiar">♻ Limpiar</button>
         </div>
       </form>
 
@@ -246,10 +245,8 @@ $rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
             <?php } ?>
 
             <div class="mt-3 text-end">
-              <?php if ($rol != 4) { ?>
               <a href="ventas_form.php?id=<?= $venta['id_venta'] ?>" class="btn btn-sm btn-warning">✏ Editar</a>
               <a href="ventas_borrar.php?id=<?= $venta['id_venta'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta venta?')">🗑 Eliminar</a>
-              <?php } ?>
             </div>
           </div>
         <?php } ?>
@@ -262,5 +259,16 @@ $rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
   <footer>
     © <?= date("Y"); ?> Grupo Lux — Todos los derechos reservados.
   </footer>
+
+  <script>
+    document.getElementById('btnLimpiar').addEventListener('click', function() {
+      // Limpia los campos del filtro
+      document.querySelectorAll('#filtrosForm input').forEach(input => input.value = '');
+      // Opcional: si tienes selects, también resetea aquí
+
+      // Llama a la función AJAX para recargar la lista sin filtros
+      filtrarProductos(1);
+    });
+  </script>
 </body>
 </html>

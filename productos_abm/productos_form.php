@@ -1,6 +1,7 @@
 <?php
 include("../backend/conexion.php");
 
+
 // Si viene con ID, es edición
 $id = $_GET['id'] ?? null;
 $nombre = $descripcion = $precio = $stock = $categoria = "";

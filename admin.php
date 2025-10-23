@@ -34,6 +34,18 @@ include 'backend/header.php';     // muestra la barra superior
       flex: 1; /* Empuja el footer hacia abajo */
     }
 
+    /* Centrar verticalmente el contenido principal */
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+}
+
     /* ======== NAVBAR ======== */
     .navbar {
       background: linear-gradient(90deg, #1e293b, #334155);

@@ -103,53 +103,59 @@ $result = $stmt->get_result();
     <div class="text-center mb-4 btn-group">
       <a href="dashboard.php" class="btn btn-secondary">⬅ Volver</a>
       <?php if ($rol != 4) { ?>
-        <a href="../productos_abm/productos_form.php" class="btn btn-success">➕ Nuevo Producto</a>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoProducto">
+          ➕ Nuevo Producto
+        </button>
         <a href="../productos_abm/productos_listar.php" class="btn btn-primary">📋 Inventario Completo</a>
       <?php } ?>
     </div>
 
-    <?php if ($result->num_rows > 0) { ?>
-      <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle">
-          <thead class="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Negocio</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <?php if ($rol != 4) { ?><th>Acciones</th><?php } ?>
-            </tr>
-          </thead>
-          <tbody>
-          <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr>
-              <td><?= $row['id_producto'] ?></td>
-              <td><?= htmlspecialchars($row['negocio']) ?></td>
-              <td><?= htmlspecialchars($row['nombre']) ?></td>
-              <td><?= htmlspecialchars($row['descripcion']) ?></td>
-              <td>$<?= number_format($row['precio'],2) ?></td>
-              <td><?= $row['stock'] ?></td>
-              <?php if ($rol != 4) { ?>
-              <td class="text-center">
-                <a href="../productos_abm/productos_form.php?id=<?= $row['id_producto'] ?>" 
-                   class="btn btn-sm btn-warning">✏ Editar</a>
-                <a href="../productos_abm/productos_borrar.php?id=<?= $row['id_producto'] ?>" 
-                   class="btn btn-sm btn-danger"
-                   onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑 Eliminar</a>
-              </td>
-              <?php } ?>
-            </tr>
-          <?php } ?>
-          </tbody>
-        </table>
-      </div>
-    <?php } else { ?>
-      <div class="alert alert-info text-center">
-        ⚠️ No hay productos en la categoría <strong><?= htmlspecialchars($categoria) ?></strong>.
-      </div>
-    <?php } ?>
+    <div id="mensajeExito"></div>
+
+    <div id="tabla-productos">
+      <?php if ($result->num_rows > 0) { ?>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Negocio</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <?php if ($rol != 4) { ?><th>Acciones</th><?php } ?>
+              </tr>
+            </thead>
+            <tbody>
+            <?php while ($row = $result->fetch_assoc()) { ?>
+              <tr>
+                <td><?= $row['id_producto'] ?></td>
+                <td><?= htmlspecialchars($row['negocio']) ?></td>
+                <td><?= htmlspecialchars($row['nombre']) ?></td>
+                <td><?= htmlspecialchars($row['descripcion']) ?></td>
+                <td>$<?= number_format($row['precio'],2) ?></td>
+                <td><?= $row['stock'] ?></td>
+                <?php if ($rol != 4) { ?>
+                <td class="text-center">
+                  <a href="../productos_abm/productos_form.php?id=<?= $row['id_producto'] ?>" 
+                     class="btn btn-sm btn-warning">✏ Editar</a>
+                  <a href="../productos_abm/productos_borrar.php?id=<?= $row['id_producto'] ?>" 
+                     class="btn btn-sm btn-danger"
+                     onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑 Eliminar</a>
+                </td>
+                <?php } ?>
+              </tr>
+            <?php } ?>
+            </tbody>
+          </table>
+        </div>
+      <?php } else { ?>
+        <div class="alert alert-info text-center">
+          ⚠️ No hay productos en la categoría <strong><?= htmlspecialchars($categoria) ?></strong>.
+        </div>
+      <?php } ?>
+    </div>
   </div>
 
   <!-- Footer -->
@@ -157,6 +163,85 @@ $result = $stmt->get_result();
     &copy; <?= date("Y") ?> Grupo Lux - Todos los derechos reservados
   </footer>
 
+  <!-- Modal para nuevo producto -->
+  <div class="modal fade" id="modalNuevoProducto" tabindex="-1" aria-labelledby="modalNuevoProductoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="formNuevoProducto" method="post" action="../productos_abm/productos_guardar.php" enctype="multipart/form-data" class="form-producto" style="box-shadow:none;max-width:100%;padding:1.5rem;">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevoProductoLabel">Agregar Producto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <label>Negocio:</label>
+            <select name="id_negocio" required class="form-select mb-2">
+              <option value="">Seleccione...</option>
+              <?php
+              $negocios = $conn->query("SELECT * FROM negocios");
+              while($n = $negocios->fetch_assoc()) { ?>
+                <option value="<?= $n['id_negocio'] ?>"><?= $n['nombre'] ?></option>
+              <?php } ?>
+            </select>
+
+            <label>Nombre:</label>
+            <input type="text" name="nombre" class="form-control mb-2" required>
+
+            <label>Descripción:</label>
+            <textarea name="descripcion" class="form-control mb-2"></textarea>
+
+            <label>Precio:</label>
+            <input type="text" name="precio" class="form-control mb-2" required>
+
+            <label>Stock:</label>
+            <input type="number" name="stock" class="form-control mb-2" required>
+
+            <label>Categoría:</label>
+            <input type="text" name="categoria" class="form-control mb-2">
+
+            <label>Imágenes:</label>
+            <input type="file" name="imagenes[]" multiple class="form-control mb-2">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+document.getElementById('formNuevoProducto').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var form = this;
+  var data = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: data
+  })
+  .then(response => response.json())
+  .then(res => {
+    if (res.success) {
+      // Cierra el modal
+      var modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoProducto'));
+      modal.hide();
+      // Muestra mensaje de éxito
+      document.getElementById('mensajeExito').innerHTML = '<div class="alert alert-success text-center mt-3">✅ Producto guardado correctamente.</div>';
+      // Limpia el formulario
+      form.reset();
+      // Opcional: recarga la tabla de productos (requiere AJAX extra)
+      setTimeout(() => { document.getElementById('mensajeExito').innerHTML = ''; }, 3000);
+    } else {
+      alert(res.error || 'Ocurrió un error al guardar el producto.');
+    }
+  })
+  .catch(() => {
+    alert('Ocurrió un error al guardar el producto.');
+  });
+});
+</script>
 </body>
 </html>
 <?php
