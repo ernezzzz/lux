@@ -165,7 +165,7 @@ main {
   <!-- CONTENIDO PRINCIPAL -->
   <main>
   <section class="icons">
-  <a href="backend/loginform.php" class="icon-btn">
+  <a href="farmacia/dashboard.php" class="icon-btn">
     <i>➕</i>
     <p>FARMACIA</p>
   </a>
@@ -173,7 +173,7 @@ main {
     <i>📖</i>
     <p>LIBRERÍA Y PAPELERÍA</p>
   </a>
-  <a href="backend/loginform.php" class="icon-btn">
+  <a href="tecnologia/dashboard.php" class="icon-btn">
     <i>💻</i>
     <p>ELECTRODOMÉSTICOS Y TECNOLOGÍA</p>
   </a>

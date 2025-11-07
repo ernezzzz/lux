@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-10-2025 a las 23:55:54
+-- Tiempo de generación: 07-11-2025 a las 02:57:31
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -109,7 +109,25 @@ INSERT INTO `productos` (`id_producto`, `id_negocio`, `nombre`, `descripcion`, `
 (3, 4, 'Yeso', 'Yeso en polvo', '574', 26, 'Artistica'),
 (4, 4, 'Acrilico', 'Acrilico 500 ml', '655', 52, 'Artistica'),
 (5, 4, 'hola', 'chau', '894', 65, 'Artística'),
-(6, 4, 'prueba', 'nose', '541', 222, 'Artística');
+(6, 4, 'prueba', 'nose', '541', 222, 'Artística'),
+(7, 4, 'libro', 'mozart', '12345', 24, 'libros'),
+(10, 1, 'admin', 'sadasd', '213', 124, ''),
+(11, 1, '21412', '2341', '12345', 214213, ''),
+(12, 4, 'admin', 'asdassa', '12345', 2141, '2141'),
+(13, 1, 'admin', 'asdada', '2214123', 21412, ''),
+(14, 4, 'admin', '123123', '124214', 214213, '124'),
+(15, 4, 'admin', '123123', '124214', 214213, '124'),
+(16, 4, 'Ernesto', 'aasdwqe', '12345', 124, 'artistica'),
+(17, 4, '312412', '214asdasd', '12345', 12312, 'artistica'),
+(18, 4, '21412', '221412', '1241', 213, 'artistica'),
+(19, 4, 'Silicona', 'pega', '150000', 89, ''),
+(20, 4, 'Pomo', 'Agua', '12356', 444, 'artistica'),
+(21, 4, 'libro', 'libro1', '20', 5, 'artistica'),
+(22, 4, 'libro2', 'libro2', '45', 10, 'artistica'),
+(23, 4, 'admin', 'dasd', '124', 21412, 'Artistica'),
+(24, 4, '12412', '12ed12', '12412', 21412, 'artistica'),
+(25, 3, 'caca', 'askdjd', '12345', 30, 'Cuidado de piel'),
+(26, 2, 'tv', 'sdaasdsad', '213124', 213, 'Televisores');
 
 -- --------------------------------------------------------
 
@@ -138,7 +156,21 @@ INSERT INTO `productos_imagenes` (`id_imagen`, `id_producto`, `ruta`) VALUES
 (13, 4, 'uploads/1758930924_WhatsApp Image 2025-08-07 at 6.07.49 PM.jpeg'),
 (14, 4, 'uploads/1758930924_WhatsApp Image 2025-08-07 at 6.07.48 PM.jpeg'),
 (15, 3, 'uploads/1758930942_descarga.jfif'),
-(16, 3, 'uploads/1758930942_Wallpaper 1.jfif');
+(16, 3, 'uploads/1758930942_Wallpaper 1.jfif'),
+(17, 7, 'http://localhost/lux/imagenes/1759784673_20f620f7e65a445102a3d63a76cb1afc copy.jpg'),
+(20, 12, 'http://localhost/lux/imagenes/1759784804_78c3f248040747417f5d43a999ba5a58 copy.jpg'),
+(21, 14, 'http://localhost/lux/imagenes/1759784997_78c3f248040747417f5d43a999ba5a58 copy.jpg'),
+(22, 15, 'http://localhost/lux/imagenes/1759784999_78c3f248040747417f5d43a999ba5a58 copy.jpg'),
+(23, 16, 'http://localhost/lux/imagenes/1759785150_20f620f7e65a445102a3d63a76cb1afc copy.jpg'),
+(24, 17, 'http://localhost/lux/imagenes/1759785202_1758930777_3 (1).jpg'),
+(25, 18, 'http://localhost/lux/imagenes/1759785431_20f620f7e65a445102a3d63a76cb1afc.jpg'),
+(26, 19, 'http://localhost/lux/imagenes/1759785493_20f620f7e65a445102a3d63a76cb1afc copy.jpg'),
+(27, 20, 'http://localhost/lux/imagenes/1759785861_1758930942_descarga.jfif'),
+(28, 21, 'http://localhost/lux/imagenes/1759786341_3.jpg'),
+(29, 22, 'http://localhost/lux/imagenes/1759786409_78c3f248040747417f5d43a999ba5a58 copy.jpg'),
+(30, 23, 'http://localhost/lux/imagenes/1759787222_78c3f248040747417f5d43a999ba5a58 copy.jpg'),
+(31, 25, 'http://localhost/lux/imagenes/1762471946_3.jpg'),
+(32, 26, 'http://localhost/lux/imagenes/1762479727_78c3f248040747417f5d43a999ba5a58 copy.jpg');
 
 -- --------------------------------------------------------
 
@@ -213,7 +245,13 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `email`, `password`, `id_rol`, `id_negocio`) VALUES
 (1, 'admin', 'admin', 'admin@admin.com', '1234', 1, 4),
-(2, 'cliente', 'libreria', 'cliente@cliente.com', '3210', 3, 4);
+(2, 'cliente', 'libreria', 'cliente@cliente.com', '3210', 3, 4),
+(3, 'empleado3', 'libreria', 'empleado@gmail.com', '1234', 4, 4),
+(4, 'adminN', 'libreria', 'adminN@gmail.com', '1234', 2, 4),
+(5, 'cliente', 'farmacia', 'cliente@gmail.com', '1234', 3, 3),
+(6, 'cliente2', 'tecnologia', 'cliente@gmail.com', '1234', 3, 2),
+(7, 'empleado2', 'tecnologia', 'empleado@gmail.com', '1234', 4, 2),
+(8, 'adminN2', 'tecnologia', 'adminN@gmail.com', '1234', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -240,7 +278,9 @@ INSERT INTO `ventas` (`id_venta`, `id_negocio`, `id_usuario`, `fecha`, `total`, 
 (5, 4, 2, '2025-09-30', '655', NULL, NULL),
 (6, 4, 2, '2025-09-30', '574', NULL, NULL),
 (7, 4, 2, '2025-09-30', '894', NULL, NULL),
-(8, 4, 2, '2025-10-01', '655', NULL, NULL);
+(8, 4, 2, '2025-10-01', '655', NULL, NULL),
+(9, 3, 5, '2025-11-07', '12345', NULL, NULL),
+(10, 2, 6, '2025-11-07', '213124', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -265,7 +305,9 @@ INSERT INTO `ventas_detalle` (`id_detalle`, `id_venta`, `id_producto`, `cantidad
 (1, 5, 4, 1, 655.00, 655),
 (2, 6, 3, 1, 574.00, 574),
 (3, 7, 5, 1, 894.00, 894),
-(4, 8, 4, 1, 655.00, 655);
+(4, 8, 4, 1, 655.00, 655),
+(5, 9, 25, 1, 12345.00, 12345),
+(6, 10, 26, 1, 213124.00, 213124);
 
 --
 -- Índices para tablas volcadas
@@ -390,13 +432,13 @@ ALTER TABLE `negocios`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `productos_imagenes`
 --
 ALTER TABLE `productos_imagenes`
-  MODIFY `id_imagen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_imagen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `recetas`
@@ -420,19 +462,19 @@ ALTER TABLE `turnos`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas_detalle`
 --
 ALTER TABLE `ventas_detalle`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas

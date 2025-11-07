@@ -13,7 +13,7 @@ include("../backend/conexion.php");
 if (!isset($_SESSION['id_usuario'])) {
     die("<div class='alert alert-danger'>⚠️ Debes iniciar sesión</div>");
 }
-$id_negocio = $_SESSION['id_negocio'];
+$id_negocio = $_SESSION['id_negocio'] ?? 4; // 4 = farmacia (ajustar si es otro id)
 $rol = $_SESSION['id_rol'] ?? null; // <-- Agrega esta línea
 
 // --- Filtros y query ---
@@ -28,27 +28,29 @@ $limit      = 20;
 $offset     = ($page - 1) * $limit;
 
 $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock, p.categoria,
-        (SELECT ruta FROM productos_imagenes WHERE id_producto = p.id_producto LIMIT 1) AS imagen
+               (SELECT ruta FROM productos_imagenes WHERE id_producto = p.id_producto ORDER BY id_imagen ASC LIMIT 1) AS imagen
         FROM productos p
-        WHERE p.id_negocio = ?";
+        WHERE p.id_negocio = ?"; // filtramos por negocio (farmacia)
+
 $params = [$id_negocio];
-$types = "i";
+$types  = "i";
 
 if ($precio_min !== '') { $sql .= " AND p.precio >= ?"; $params[] = $precio_min; $types.="d"; }
 if ($precio_max !== '') { $sql .= " AND p.precio <= ?"; $params[] = $precio_max; $types.="d"; }
-if ($categoria !== '')  { $sql .= " AND p.categoria LIKE ?"; $params[] = "%$categoria%"; $types.="s"; }
-if ($stock !== '')      { $sql .= " AND p.stock >= ?"; $params[] = $stock; $types.="i"; }
-if ($nombre !== '')     { $sql .= " AND p.nombre LIKE ?"; $params[] = "%$nombre%"; $types.="s"; }
+if ($categoria !== '')   { $sql .= " AND p.categoria = ?"; $params[] = $categoria; $types.="s"; }
+if ($stock !== '')       { $sql .= " AND p.stock <= ?"; $params[] = $stock; $types.="i"; }
+if ($nombre !== '')      { $sql .= " AND p.nombre LIKE ?"; $params[] = "%$nombre%"; $types.="s"; }
 
-switch ($orden) {
-    case "mayor_precio": $sql .= " ORDER BY p.precio DESC"; break;
-    case "menor_precio": $sql .= " ORDER BY p.precio ASC"; break;
-    default: $sql .= " ORDER BY p.nombre ASC"; break;
-}
+$sql .= " ORDER BY p.nombre ";
 $sql .= " LIMIT $limit OFFSET $offset";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param($types, ...$params);
+if ($stmt === false) { die($conn->error); }
+if (!empty($params)) {
+    $bind_names[] = $types;
+    for ($i=0; $i<count($params); $i++) $bind_names[] = &$params[$i];
+    call_user_func_array([$stmt, 'bind_param'], $bind_names);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -172,7 +174,7 @@ $totalPages = ceil($totalRows / $limit);
             <?php while($row = $result->fetch_assoc()) { ?>
               <div class="col-md-3">
                 <div class="product-card p-2">
-                  <img src="<?= $row['imagen'] ?: 'https://via.placeholder.com/150' ?>" alt="Producto">
+                  <img src="<?= htmlspecialchars($row['imagen'] ?: 'https://via.placeholder.com/150') ?>" alt="Producto">
                   <div class="p-2">
                     <h6><?= htmlspecialchars($row['nombre']) ?></h6>
                     <p class="text-muted mb-1">$<?= number_format($row['precio'],2) ?></p>

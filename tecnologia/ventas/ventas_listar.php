@@ -43,21 +43,8 @@ function resolveImageUrl($ruta) {
 $fecha_desde = $_GET['fecha_desde'] ?? '';
 $fecha_hasta = $_GET['fecha_hasta'] ?? '';
 
-// Intento detectar automáticamente el id del negocio "librería" en la tabla negocios
-$id_negocio = null;
-if ($resNeg = $conn->query("SELECT id_negocio FROM negocios WHERE nombre LIKE '%librer%' LIMIT 1")) {
-    if ($resNeg->num_rows > 0) {
-        $rowN = $resNeg->fetch_assoc();
-        $id_negocio = (int)$rowN['id_negocio'];
-    }
-}
-
-// Si no se detectó, usar el id en sesión (si existe) o fijar un fallback (cambiar si es necesario)
-$id_negocio = $id_negocio ?? ($_SESSION['id_negocio'] ?? 0);
-if ($id_negocio == 0) {
-    // Opcional: ajustar aquí el id fijo de la librería si conoces el número, por ejemplo 2
-    $id_negocio = 2;
-}
+// Forzar id_negocio = 2 (tecnologia)
+$id_negocio = 2;
 
 // Construcción dinámica de la consulta: siempre filtramos por id_negocio
 $sql = "SELECT v.id_venta, v.fecha, v.total, v.metodo_pago, v.solicitud,
@@ -93,19 +80,14 @@ if ($stmtMain === false) {
     die("Error en prepare: " . $conn->error);
 }
 
-// bind_param (si hay parámetros)
+// bind_param dinámico (bind por referencia)
 if (!empty($params)) {
-    // Para compatibilidad con diferentes versiones de PHP, usamos call_user_func_array cuando hace falta
-    if (count($params) === 1) {
-        $stmtMain->bind_param($types, $params[0]);
-    } else {
-        $bindNames = [];
-        $bindNames[] = $types;
-        for ($i = 0; $i < count($params); $i++) {
-            $bindNames[] = &$params[$i];
-        }
-        call_user_func_array([$stmtMain, 'bind_param'], $bindNames);
+    $bindNames = [];
+    $bindNames[] = $types;
+    for ($i = 0; $i < count($params); $i++) {
+        $bindNames[] = &$params[$i];
     }
+    call_user_func_array([$stmtMain, 'bind_param'], $bindNames);
 }
 
 $stmtMain->execute();

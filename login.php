@@ -27,11 +27,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id_rol'] = $usuarioData['id_rol'];
             $_SESSION['id_negocio'] = $usuarioData['id_negocio'];
 
-            // Redirección según rol
+            // Redirección según rol y negocio
+            $id_negocio = (int)$usuarioData['id_negocio'];
+
             if ($usuarioData['id_rol'] == 1) {
                 header('Location: admin.php');
             } else {
-                header('Location: libreria/dashboard.php');
+                // Mapa de redirecciones por id_negocio — ajustá los ids/rutas si hace falta
+                $redirectMap = [
+                    2 => 'clinica/dashboard.php',
+                    2 => 'tecnologia/dashboard.php',
+                    3 => 'farmacia/dashboard.php',   // farmacia (id 3)
+                    4 => 'libreria/dashboard.php',   // librería (ejemplo id 4)
+                    // agregar más mapeos si tenés otros negocios
+                ];
+                $target = $redirectMap[$id_negocio] ?? 'libreria/dashboard.php';
+                header('Location: ' . $target);
             }
             exit;
 
