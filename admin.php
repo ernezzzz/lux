@@ -177,7 +177,7 @@ main {
     <i>💻</i>
     <p>ELECTRODOMÉSTICOS Y TECNOLOGÍA</p>
   </a>
-  <a href="backend/loginform.php" class="icon-btn">
+  <a href="chat/consultorio/dashboard.php" class="icon-btn">
     <i>🏥</i>
     <p>CONSULTORIO</p>
   </a>
